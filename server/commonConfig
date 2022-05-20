@@ -14,7 +14,7 @@ numberOfTunnels=2
 # mode=6 (Balance ALB)
 # this needs to be the same on Server and client
 
-bondingMode=3
+bondingMode=0
 
 # You probably do not need to change any of these
 

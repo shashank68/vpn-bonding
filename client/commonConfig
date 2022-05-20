@@ -20,13 +20,13 @@ tunnelInterface4=wlan1
 # mode=6 (Balance ALB)
 # this needs to be the same on Server and client
 
-bondingMode=3
+bondingMode=0
 
 # you will need to change this as well.
 # this is the name or IP address of your VPN Server
 # alternatively you can just make an entry in /etc/hosts
 
-vpnServer=myVPNServer
+vpnServer="12.0.0.2"
 
 # You probably do not need to change any of these
 

@@ -79,7 +79,7 @@ do
 
     # add a rule for this interface
     
-    ip rule add pref 10 from $tunnelInterfaceIP table "vpn$i"
+    ip rule add pref 10 from "${tunnelInterfaceIP%/*}" table "vpn$i"
     ip route add default via $tunnelInterfaceGW dev ${!tunnelInterface} table "vpn$i"
     #ip route add 192.168.10.0/24 dev eth1 scope link table dsl1
 
