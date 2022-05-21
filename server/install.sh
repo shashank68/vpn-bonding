@@ -15,13 +15,11 @@
 # the script needs to be called from the directory where
 # the commonConfig file and the start/stop bridge files 
 # are located
-set -x
+# set -x
 
 . commonConfig
 
-# first install the necessary software
 
-# mkdir -p /etc/openvpn/certs
 mkdir -p /etc/openvpn/server
 
 cp commonConfig   /etc/openvpn/server
@@ -70,15 +68,7 @@ do
     # from now on)
 done
 
-# enable ip4 forwarding with sysctl
-sysctl -w net.ipv4.ip_forward=1
 
-# --- print out the content of sysctl.conf
-sysctl -p
-
-
-# we will not use TLS etc. for this exercise but rather simple
-# secret key authentication
 # we only generate a new key if none is present.
 # if a ta.key exists, we will use the existing one
 
@@ -89,14 +79,3 @@ echo "##############################################"
   echo "Keyfile does not exist - generating new one"
   openvpn --genkey --secret /etc/openvpn/ta.key
 )
-
-echo "# #############################################"
-echo "# below is your secret key - you need to copy"
-echo "# this onto your client into the file"
-echo "# /etc/openvpn/ta.key"
-echo "# #############################################"
-
-cat /etc/openvpn/ta.key
-
-echo "# #############################################"
-echo "# #############################################"

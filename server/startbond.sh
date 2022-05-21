@@ -8,7 +8,7 @@
 # and bonds them together
 #
 # #############################################
-set -x
+# set -x
 
 # include the common settings
 . /etc/openvpn/server/commonConfig
@@ -39,7 +39,6 @@ done
 
 for i in `seq 1 $numberOfTunnels`;
 do
-#    systemctl start openvpn-server@server${i}.service
     openvpn --config /etc/openvpn/server/server${i}.conf --daemon
 done
 
@@ -47,31 +46,9 @@ done
 
 ip link set $bondInterface up mtu 1440
 
-# now find the WAN interface
 
-# The initial idea here was to find the interface that has the public IP
-# address. This will not work in a NAT environment, i.e.
-# where the VPS is behind a NAT router and does not have the
-# public address directly.
-
-export OUR_OWN_IP=`sudo -u nobody curl -s ipinfo.io/ip`
-readarray -d " " -t templine <<< $(ip -br addr | grep $OUR_OWN_IP)
-export OUR_WAN_INTERFACE=${templine[0]}
-
-# Fix : If we do not get an interface this way we just use the first 
-# interface with the default route - we check for a minimum length of 3
-# checking for zero length like this 
-# [ -z "$OUR_WAN_INTERFACE" ] && export OUR_WAN_INTERFACE = ip route | grep default | sed s/.*dev\ //g | sed s/\ .*//g
-# does not work because there is a line feed
-# in the variable
-
-if [ ${#OUR_WAN_INTERFACE} -le 2 ]; then
-    echo "WAN Interface not found - was:${OUR_WAN_INTERFACE}:"
-    export OUR_WAN_INTERFACE=`ip route | grep default | sed s/.*dev\ //g | sed s/\ .*//g`
-    echo "WAN Interface is now: $OUR_WAN_INTERFACE"
-fi
-
-# quick fix : IP V4 forwarding is not permanent
+export OUR_WAN_INTERFACE=`ip route | grep default | sed s/.*dev\ //g | sed s/\ .*//g`
+echo "WAN Interface is now: $OUR_WAN_INTERFACE"
 
 sysctl -w net.ipv4.ip_forward=1
 

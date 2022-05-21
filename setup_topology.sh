@@ -1,12 +1,6 @@
 #!/bin/bash
-set -x
+# set -x
 shopt -s expand_aliases
-
-#
-# Host h1 with 2 interfaces is connected to switch s
-# 
-#
-
 
 alias netex="ip netns exec"
 
@@ -21,6 +15,8 @@ function set_veth_switch {
     netex $2 ip link set $1 master $2
     netex $2 ip link set dev $1 up
 }
+
+# h1 --- s --- r --- h2
 
 ip netns add h1
 netex h1 ip link set lo up
@@ -56,10 +52,19 @@ set_veth_netns r_h2 r 12.0.0.1/24
 set_veth_netns h2_r h2 12.0.0.2/24
 
 netex h1 ip route add default dev h1_s_a via 11.0.0.1
-netex h1 ip route add default dev h1_s_b via 11.0.0.1
 
 netex h2 ip route add default dev h2_r via 12.0.0.1
 
+# s-r 25mbit/ 5ms
+tc -n s qdisc add dev s_r root netem rate 25mbit delay 5ms
+tc -n r qdisc add dev r_s root netem rate 25mbit delay 5ms
 
+# h1-s  5mbit/10ms & 15mbit/5ms
+tc -n h1 qdisc add dev h1_s_a root netem rate 15mbit delay 5ms
+tc -n s qdisc add dev s_h1_a root netem rate 15mbit delay 5ms
+tc -n h1 qdisc add dev h1_s_b root netem rate 5mbit delay 10ms
+tc -n s qdisc add dev s_h1_b root netem rate 5mbit delay 10ms
 
-
+# r-h2 25mbit/1ms
+tc -n h2 qdisc add dev h2_r root netem rate 25mbit delay 1ms
+tc -n r qdisc add dev r_h2 root netem rate 25mbit delay 1ms

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-./del_prp.sh
-./prp.sh
+./setup_topology.sh
 cd server
 ip netns e h2 ./install.sh
 ip netns e h2 ./startbond.sh

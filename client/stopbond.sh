@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+# set -x
 
 # #############################################
 #
@@ -32,4 +32,3 @@ do
     openvpn --rmtun --dev tap${i}
 done
 
-echo "please up/down your default interface to restore routes etc"

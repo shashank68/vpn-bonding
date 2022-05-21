@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 # #############################################
 #
 # startbond.sh
@@ -69,19 +69,11 @@ do
     tunnelInterfaceGW=${templine[2]}
     tunnelInterfaceGW="11.0.0.1"
     
-    # check if default gateway is a ppp interface and modify it accordingly (bug fix)
-    
-    if [[ $tunnelInterfaceGW == ppp* ]]
-    then
-        readarray -td " " templine <<< $(ip -br route | grep ${!tunnelInterface} | grep src)
-        tunnelInterfaceGW=${templine[0]}
-    fi
 
     # add a rule for this interface
     
     ip rule add pref 10 from "${tunnelInterfaceIP%/*}" table "vpn$i"
     ip route add default via $tunnelInterfaceGW dev ${!tunnelInterface} table "vpn$i"
-    #ip route add 192.168.10.0/24 dev eth1 scope link table dsl1
 
     # make sure that each connection binds to the right inneterface
 
